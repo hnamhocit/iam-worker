@@ -8,6 +8,7 @@ import { errorHandler, notFoundHandler } from "./middlewares/error";
 import { wellKnownRoutes } from "./routes/well-known.route";
 import { oauthRoutes } from "./routes/oauth.route";
 import { clientsRoutes } from "./routes/clients.route";
+import { permissionsRoutes } from "./routes/permissions.route";
 
 const app = new Hono<AppEnv>();
 
@@ -37,6 +38,9 @@ app.get("/", (c) => {
       userinfo: `${issuer}/oauth/userinfo`,
       authorize: `${issuer}/oauth/authorize`,
       clients: `${issuer}/api/clients`,
+      iam_matrix: `${issuer}/api/iam/matrix`,
+      iam_roles: `${issuer}/api/iam/roles`,
+      iam_evaluate: `${issuer}/api/iam/evaluate`,
     },
     docs: "https://workers-hub.hnamhocit.workers.dev/workers/iam/overview/",
     timestamp: new Date().toISOString(),
@@ -59,7 +63,8 @@ app.get("/health", (c) => {
 const routes = app
   .route("/.well-known", wellKnownRoutes)
   .route("/oauth", oauthRoutes)
-  .route("/api/clients", clientsRoutes);
+  .route("/api/clients", clientsRoutes)
+  .route("/api/iam", permissionsRoutes);
 
 // 5. Xử lý lỗi & 404 tập trung
 app.onError(errorHandler);
