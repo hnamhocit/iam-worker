@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "iam",
+  "main": "src/index.ts",
+  "compatibility_date": "2024-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Biến môi trường công khai (Non-sensitive configuration)
+  "vars": {
+    "ENVIRONMENT": "production",
+    "NEXT_PUBLIC_SITE_URL": "https://iam.hnamhocit.workers.dev",
+    "NEXT_PUBLIC_WEB_URL": "https://vntez-id.vercel.app",
+    "NEXT_PUBLIC_SUPABASE_URL": "https://stbswcnsitztbusqrdhi.supabase.co",
+    "ALLOWED_ORIGINS": "https://iam.hnamhocit.workers.dev,https://id.hnamhocit.workers.dev,https://vntez-id.vercel.app,http://localhost:3000,http://localhost:3001,http://localhost:3002"
+  }
+}
