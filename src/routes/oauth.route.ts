@@ -111,3 +111,37 @@ const handleUserInfo = async (c: any) => {
 
 oauthRoutes.get("/userinfo", handleUserInfo);
 oauthRoutes.post("/userinfo", handleUserInfo);
+
+/**
+ * GET/POST /oauth/logout: Endpoint đăng xuất tập trung OpenID Connect RP-Initiated Logout
+ */
+oauthRoutes.get("/logout", (c) => {
+  const webUrl = c.env.NEXT_PUBLIC_WEB_URL || "https://vntez-iam.vercel.app";
+  const redirectUrl =
+    c.req.query("post_logout_redirect_uri") ||
+    c.req.query("redirect_url") ||
+    c.req.query("return_to");
+
+  const targetUrl = new URL("/auth/logout", webUrl);
+  if (redirectUrl) {
+    targetUrl.searchParams.set("redirect_url", redirectUrl);
+  }
+  return c.redirect(targetUrl.toString(), 302);
+});
+
+oauthRoutes.post("/logout", async (c) => {
+  const body = await c.req.json().catch(() => ({}));
+  const redirectUrl =
+    body.post_logout_redirect_uri ||
+    body.redirect_url ||
+    c.req.query("redirect_url");
+
+  return c.json(
+    {
+      ok: true,
+      message: "Đăng xuất thành công",
+      redirect_url: redirectUrl || null,
+    },
+    200,
+  );
+});

@@ -15,6 +15,7 @@ wellKnownRoutes.get("/openid-configuration", (c) => {
     authorization_endpoint: `${issuer}/oauth/authorize`,
     token_endpoint: `${issuer}/oauth/token`,
     userinfo_endpoint: `${issuer}/oauth/userinfo`,
+    end_session_endpoint: `${issuer}/oauth/logout`,
     jwks_uri: `${issuer}/.well-known/jwks.json`,
     response_types_supported: ["code"],
     subject_types_supported: ["public"],

@@ -37,6 +37,7 @@ app.get("/", (c) => {
       token: `${issuer}/oauth/token`,
       userinfo: `${issuer}/oauth/userinfo`,
       authorize: `${issuer}/oauth/authorize`,
+      logout: `${issuer}/oauth/logout`,
       clients: `${issuer}/api/clients`,
       iam_matrix: `${issuer}/api/iam/matrix`,
       iam_roles: `${issuer}/api/iam/roles`,
