@@ -9,6 +9,7 @@ import { wellKnownRoutes } from "./routes/well-known.route";
 import { oauthRoutes } from "./routes/oauth.route";
 import { clientsRoutes } from "./routes/clients.route";
 import { permissionsRoutes } from "./routes/permissions.route";
+import { configRoutes } from "./routes/config/remote-config.route";
 
 const app = new Hono<AppEnv>();
 
@@ -19,7 +20,7 @@ app.use("*", customCors());
 // 2. Trang chủ - API Discovery (Pure JSON, No HTML)
 app.get("/", (c) => {
   const issuer = c.env.NEXT_PUBLIC_SITE_URL || "https://iam.hnamhocit.workers.dev";
-  const webUrl = c.env.NEXT_PUBLIC_WEB_URL || "https://vntez-id.vercel.app";
+  const webUrl = c.env.NEXT_PUBLIC_WEB_URL || "https://vntez-iam.vercel.app";
 
   return c.json({
     ok: true,
@@ -65,7 +66,8 @@ const routes = app
   .route("/.well-known", wellKnownRoutes)
   .route("/oauth", oauthRoutes)
   .route("/api/clients", clientsRoutes)
-  .route("/api/iam", permissionsRoutes);
+  .route("/api/iam", permissionsRoutes)
+  .route("/api/remote-config", configRoutes);
 
 // 5. Xử lý lỗi & 404 tập trung
 app.onError(errorHandler);
