@@ -22,6 +22,12 @@ export interface Bindings {
 
   // Cloudflare Storage Bindings (Optional)
   OAUTH_CACHE?: KVNamespace;
+
+  // VNTEZ IAM Configuration
+  NEXT_PUBLIC_VNTEZ_IAM_URL: string;
+  NEXT_PUBLIC_VNTEZ_CLIENT_ID: string;
+  NEXT_PUBLIC_VNTEZ_REDIRECT_URI: string;
+  VNTEZ_CLIENT_SECRET?: string; // Only for backend/SSR apps
 }
 
 export interface Variables {

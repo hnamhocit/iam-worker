@@ -21,6 +21,18 @@ export const errorHandler: ErrorHandler<AppEnv> = (err, c) => {
     );
   }
 
+  // OAuth Error
+  if (err instanceof HTTPException && err.status === 401) {
+    return c.json(
+      {
+        success: false,
+        message: err.message,
+        code: "OAUTH_ERROR",
+      },
+      401,
+    );
+  }
+
   // Lỗi Zod Validation
   if (err instanceof ZodError) {
     const firstIssue = err.issues[0];

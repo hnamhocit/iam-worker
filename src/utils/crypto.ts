@@ -73,10 +73,31 @@ export async function verifyPkce(
 /**
  * Sinh chuỗi ngẫu nhiên an toàn (Cryptographically Secure)
  */
-export function generateRandomString(byteLength = 16): string {
+export function generateRandomString(byteLength = 32): string {
   const bytes = new Uint8Array(byteLength);
   crypto.getRandomValues(bytes);
   return Array.from(bytes)
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
+}
+
+/**
+ * Generate PKCE code verifier (43-128 chars)
+ */
+export function generateCodeVerifier(): string {
+  return generateRandomString(32);
+}
+
+/**
+ * Generate PKCE code challenge from verifier
+ */
+export async function generateCodeChallenge(verifier: string): Promise<string> {
+  return sha256Base64Url(verifier);
+}
+
+/**
+ * Generate random state for OAuth flow (32 chars)
+ */
+export function generateState(): string {
+  return generateRandomString(32);
 }
