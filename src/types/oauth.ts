@@ -1,3 +1,4 @@
+// Legacy support (Deprecated - Use AppRecord instead)
 export interface OAuthClientRecord {
   client_id: string;
   client_secret_hash: string | null;
@@ -7,6 +8,22 @@ export interface OAuthClientRecord {
   description?: string | null;
   is_internal?: boolean;
   created_at?: string;
+}
+
+// New App Record structure (dari bảng apps)
+export interface AppRecord {
+  id: string; // ví dụ: 'vntez', 'solotype'
+  app_secret: string | null; // Client secret
+  name: string;
+  redirect_uris: string[];
+  logo_url?: string | null;
+  description?: string | null;
+  status: 'active' | 'inactive';
+  is_internal: boolean;
+  roles: string[]; // Mảng roles
+  permissions?: Record<string, string[]>; // {role: [perms]}
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface OAuthCodeRecord {
@@ -46,6 +63,9 @@ export interface UserInfoResponse {
   name: string;
   avatar: string | null;
   picture: string | null;
+  app_id?: string; // Optional: app_id nếu được request từ app cụ thể
+  roles?: string[]; // Optional: roles của user trong app
+  permissions?: string[]; // Optional: permissions của user trong app
 }
 
 export interface ApiResponse<T = unknown> {

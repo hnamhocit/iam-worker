@@ -72,6 +72,7 @@ oauthRoutes.post("/token", async (c) => {
 
 /**
  * GET/POST /oauth/userinfo: Lấy thông tin tài khoản người dùng qua Bearer Token
+ * Hỗ trợ X-App-Id header hoặc ?app_id query param để trả về role/permission
  */
 const handleUserInfo = async (c: any) => {
   const authHeader = c.req.header("Authorization");
@@ -86,8 +87,12 @@ const handleUserInfo = async (c: any) => {
   }
 
   const token = authHeader.substring(7).trim();
+  
+  // Lấy app_id từ X-App-Id header hoặc query param ?app_id
+  const appId = c.req.header("X-App-Id") || c.req.query("app_id");
+  
   try {
-    const userInfo = await OAuthService.getUserInfo(c.env, token);
+    const userInfo = await OAuthService.getUserInfo(c.env, token, appId);
     return c.json(userInfo, 200);
   } catch (err: any) {
     if (err instanceof HTTPException) {
