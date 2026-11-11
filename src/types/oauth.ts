@@ -47,6 +47,7 @@ export interface AccessTokenClaims {
   email?: string;
   name?: string;
   avatar?: string | null;
+  app_id?: string;
 }
 
 export interface TokenResponse {

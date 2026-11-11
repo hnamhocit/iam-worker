@@ -150,6 +150,7 @@ export class OAuthService {
     const { accessToken, expiresIn } = await signAccessToken(env, {
       userId: codeRecord.user_id,
       clientId: appId,
+      appId: appId,
     });
 
     return {

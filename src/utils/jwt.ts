@@ -20,6 +20,7 @@ export async function signAccessToken(
   params: {
     userId: string;
     clientId: string;
+    appId?: string;
     email?: string;
     name?: string;
     avatar?: string | null;
@@ -45,6 +46,7 @@ export async function signAccessToken(
     email: params.email,
     name: params.name,
     avatar: params.avatar,
+    app_id: params.appId,
   })
     .setProtectedHeader({ alg: algorithm, typ: "JWT" })
     .setIssuedAt()
@@ -95,5 +97,6 @@ export async function verifyAccessToken(
     email: payload.email as string | undefined,
     name: payload.name as string | undefined,
     avatar: payload.avatar as string | null | undefined,
+    app_id: payload.app_id as string | undefined,
   };
 }

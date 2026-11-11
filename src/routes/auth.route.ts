@@ -9,7 +9,7 @@ const app = new Hono<AppEnv>();
  * Initiate SSO login flow
  */
 app.get("/login", async (c) => {
-  const { url, state, codeVerifier } = AuthService.getAuthorizationUrl(c.env);
+  const { url, state, codeVerifier } = await AuthService.getAuthorizationUrl(c.env);
   
   // Store state and codeVerifier in secure session
   await c.env.OAUTH_CACHE?.put(`oauth:${state}`, codeVerifier, {

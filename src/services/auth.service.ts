@@ -6,7 +6,7 @@ export class AuthService {
   /**
    * Generate authorization URL for VNTEZ IAM SSO
    */
-  static getAuthorizationUrl(env: Bindings): { url: string; state: string; codeVerifier: string } {
+  static async getAuthorizationUrl(env: Bindings): Promise<{ url: string; state: string; codeVerifier: string }> {
     const state = generateState();
     const codeVerifier = generateCodeVerifier();
     const codeChallenge = await generateCodeChallenge(codeVerifier);
