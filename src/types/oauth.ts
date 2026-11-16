@@ -13,7 +13,9 @@ export interface OAuthClientRecord {
 // New App Record structure (dari bảng apps)
 export interface AppRecord {
   id: string; // ví dụ: 'vntez', 'solotype'
+  client_id?: string; // alias client_id = id
   app_secret: string | null; // Client secret
+  client_secret_hash?: string | null; // legacy alias
   name: string;
   redirect_uris: string[];
   logo_url?: string | null;

@@ -66,6 +66,7 @@ const routes = app
   .route("/.well-known", wellKnownRoutes)
   .route("/oauth", oauthRoutes)
   .route("/api/clients", clientsRoutes)
+  .route("/api/apps", clientsRoutes)
   .route("/api/iam", permissionsRoutes)
   .route("/api/remote-config", configRoutes);
 

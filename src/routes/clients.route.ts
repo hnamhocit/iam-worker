@@ -7,18 +7,40 @@ import { ClientService } from "../services/client.service";
 export const clientsRoutes = new Hono<AppEnv>();
 
 /**
- * GET /api/clients: Danh sách các client đã đăng ký
+ * GET /api/clients (hoặc /api/apps): Danh sách các apps đã đăng ký
  */
 clientsRoutes.get("/", async (c) => {
-  const clients = await ClientService.listClients(c.env);
+  const apps = await ClientService.listClients(c.env);
   return c.json({
     success: true,
-    data: clients,
+    data: apps,
   });
 });
 
 /**
- * POST /api/clients: Đăng ký OAuth Client mới
+ * GET /api/clients/:id: Lấy thông tin chi tiết một app theo id
+ */
+clientsRoutes.get("/:id", async (c) => {
+  const appId = c.req.param("id");
+  const app = await ClientService.getClient(c.env, appId);
+  if (!app) {
+    return c.json(
+      {
+        success: false,
+        error: `Không tìm thấy ứng dụng với ID '${appId}'`,
+      },
+      404,
+    );
+  }
+
+  return c.json({
+    success: true,
+    data: app,
+  });
+});
+
+/**
+ * POST /api/clients (hoặc /api/apps): Đăng ký App mới
  */
 clientsRoutes.post(
   "/",
@@ -39,14 +61,14 @@ clientsRoutes.post(
 );
 
 /**
- * DELETE /api/clients/:id: Xóa client
+ * DELETE /api/clients/:id (hoặc /api/apps/:id): Xóa app
  */
 clientsRoutes.delete("/:id", async (c) => {
-  const clientId = c.req.param("id");
-  await ClientService.deleteClient(c.env, clientId);
+  const appId = c.req.param("id");
+  await ClientService.deleteClient(c.env, appId);
 
   return c.json({
     success: true,
-    message: `Đã xóa client ${clientId}`,
+    message: `Đã xóa ứng dụng ${appId}`,
   });
 });

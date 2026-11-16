@@ -12,6 +12,7 @@ export class AuthService {
     const codeChallenge = await generateCodeChallenge(codeVerifier);
 
     const url = new URL(`${env.NEXT_PUBLIC_VNTEZ_IAM_URL}/oauth/authorize`);
+    url.searchParams.append("app_id", env.NEXT_PUBLIC_VNTEZ_CLIENT_ID);
     url.searchParams.append("client_id", env.NEXT_PUBLIC_VNTEZ_CLIENT_ID);
     url.searchParams.append("redirect_uri", env.NEXT_PUBLIC_VNTEZ_REDIRECT_URI);
     url.searchParams.append("response_type", "code");
@@ -43,9 +44,11 @@ export class AuthService {
       body: JSON.stringify({
         grant_type: "authorization_code",
         code,
+        app_id: env.NEXT_PUBLIC_VNTEZ_CLIENT_ID,
         client_id: env.NEXT_PUBLIC_VNTEZ_CLIENT_ID,
         code_verifier: codeVerifier,
         redirect_uri: env.NEXT_PUBLIC_VNTEZ_REDIRECT_URI,
+        app_secret: env.VNTEZ_CLIENT_SECRET,
         client_secret: env.VNTEZ_CLIENT_SECRET,
       }),
     });

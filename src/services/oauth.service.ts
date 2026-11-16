@@ -2,7 +2,6 @@ import { HTTPException } from "hono/http-exception";
 import type { Bindings } from "../types/bindings";
 import type { TokenRequestInput } from "../schemas/oauth.schema";
 import type {
-  OAuthClientRecord,
   OAuthCodeRecord,
   TokenResponse,
   UserInfoResponse,
@@ -31,11 +30,8 @@ export class OAuthService {
       });
     }
 
-    // 1. Tìm App từ bảng apps (mới) hoặc oauth_clients (legacy)
-    let app: any = null;
-    
-    // Cố gắng lấy từ bảng apps mới trước
-    const { data: appData, error: appErr } = await supabase
+    // 1. Tìm App từ bảng apps theo app_id / id
+    const { data: app, error: appErr } = await supabase
       .from("apps")
       .select("*")
       .eq("id", appId)
@@ -45,22 +41,9 @@ export class OAuthService {
       console.error("Error querying apps table:", appErr);
     }
 
-    // Fallback: nếu không tìm thấy trong apps, thử oauth_clients (legacy)
-    if (!appData && input.client_id) {
-      const { data: legacyClient } = await supabase
-        .from("oauth_clients")
-        .select("*")
-        .eq("client_id", input.client_id)
-        .maybeSingle<OAuthClientRecord>();
-      
-      app = legacyClient;
-    } else {
-      app = appData;
-    }
-
     if (!app) {
       throw new HTTPException(401, {
-        message: "App không hợp lệ hoặc chưa đăng ký trong hệ thống",
+        message: `App '${appId}' không tồn tại hoặc chưa đăng ký trong hệ thống`,
       });
     }
 

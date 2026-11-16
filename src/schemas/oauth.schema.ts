@@ -24,12 +24,16 @@ export const TokenRequestSchema = z.object({
 export type TokenRequestInput = z.infer<typeof TokenRequestSchema>;
 
 /**
- * Schema validate Đăng ký OAuth Client mới
+ * Schema validate Đăng ký OAuth Client / App mới
  */
 export const CreateClientSchema = z.object({
+  id: z.string().min(2, "ID ứng dụng tối thiểu 2 ký tự").optional(),
+  app_id: z.string().min(2, "app_id tối thiểu 2 ký tự").optional(),
+  client_id: z.string().min(2, "client_id tối thiểu 2 ký tự").optional(),
   name: z.string().min(2, "Tên ứng dụng tối thiểu 2 ký tự").max(100),
   redirect_uris: z.array(z.string().url("Redirect URI không hợp lệ")).min(1, "Cần ít nhất 1 Redirect URI"),
   is_confidential: z.boolean().default(false),
+  is_internal: z.boolean().default(false),
   description: z.string().max(500).optional(),
   logo_url: z.string().url("Logo URL không hợp lệ").optional(),
 });
