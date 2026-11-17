@@ -25,7 +25,7 @@ oauthRoutes.post("/token", async (c) => {
   const contentType = c.req.header("content-type") || "";
   let rawBody: Record<string, any> = {};
 
-  if (contentType.includes("application/x-www-form-urlencoded")) {
+  if (contentType.includes("application/x-www-form-urlencoded") || contentType.includes("multipart/form-data")) {
     rawBody = await c.req.parseBody();
   } else {
     rawBody = await c.req.json().catch(() => ({}));

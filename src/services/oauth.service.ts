@@ -54,21 +54,7 @@ export class OAuthService {
       });
     }
 
-    // 3. Xác thực Secret (app_secret mới hoặc client_secret_hash legacy)
-    const secret = input.app_secret || input.client_secret;
-    const secretHash = app.app_secret || app.client_secret_hash;
-    
-    if (secretHash) {
-      // Nếu app có secret, phải validate
-      const isSecretValid = await verifyClientSecret(secret, secretHash);
-      if (!isSecretValid) {
-        throw new HTTPException(401, {
-          message: "app_secret/client_secret không chính xác hoặc thiếu",
-        });
-      }
-    }
-
-    // 4. Kiểm tra redirect_uri có hợp lệ không
+    // 3. Kiểm tra redirect_uri có hợp lệ không
     const redirectUris = app.redirect_uris || [];
     const isRedirectAllowed = redirectUris.some((uri: string) => {
       try {
@@ -86,7 +72,7 @@ export class OAuthService {
       });
     }
 
-    // 5. Kiểm tra Authorization Code
+    // 4. Kiểm tra Authorization Code
     const { data: codeRecord, error: codeErr } = await supabase
       .from("oauth_codes")
       .select("*")
@@ -100,6 +86,30 @@ export class OAuthService {
       throw new HTTPException(400, {
         message: "Auth code không hợp lệ, đã hết hạn hoặc redirect_uri không khớp",
       });
+    }
+
+    // 5. Xác thực Client Authentication:
+    // - Luồng PKCE (SPA/Public Client): Client xác thực qua PKCE (code_verifier). Nếu có gửi secret thì kiểm tra, không gửi thì bỏ qua.
+    // - Luồng Confidential Client (không có code_challenge): Bắt buộc xác thực app_secret/client_secret nếu app có secret.
+    const secret = input.app_secret || input.client_secret;
+    const secretHash = app.app_secret || app.client_secret_hash;
+
+    if (!codeRecord.code_challenge) {
+      if (secretHash) {
+        const isSecretValid = await verifyClientSecret(secret, secretHash);
+        if (!isSecretValid) {
+          throw new HTTPException(401, {
+            message: "app_secret/client_secret không chính xác hoặc thiếu",
+          });
+        }
+      }
+    } else if (secret && secretHash) {
+      const isSecretValid = await verifyClientSecret(secret, secretHash);
+      if (!isSecretValid) {
+        throw new HTTPException(401, {
+          message: "app_secret/client_secret không chính xác",
+        });
+      }
     }
 
     // 6. Xác thực PKCE S256 nếu code có code_challenge
